@@ -1,0 +1,3 @@
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
+    
+}
