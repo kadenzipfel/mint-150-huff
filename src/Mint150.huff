@@ -26,8 +26,10 @@
     is_owned jumpi                          // [start + 1, victim, victim, start + 1]
 
     // mstore contract address
-    address 0x20 mstore                     // [start + 1, victim, victim, start + 1]
+    address 0x20 mstore                     // [start, victim, victim, start]
 
     // mstore caller address
-    caller 0x40 mstore                      // [start + 1, victim, victim, start + 1]
+    caller 0x40 mstore                      // [start, victim, victim, start]
+
+    dup1 150 add                            // [end, start, victim, victim, start]
 }
