@@ -57,5 +57,8 @@
 
         // Get end > i + 1
         dup1 dup3 gt                        // [end > i + 1, i + 1, end, victim, start]
-    next_iter jumpi
+    next_iter jumpi                         // [i + 1, end, victim, start]
+
+    // mstore start
+    swap3 0x60 mstore                       // [i + 1, end, victim]
 }
