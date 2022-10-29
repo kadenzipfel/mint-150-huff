@@ -32,12 +32,12 @@
     caller 0x40 mstore                      // [start, victim, victim, start]
 
     // Get end
-    dup1 0x96 add                           // [end, start, victim, victim, start]
+    dup1 0x94 add                           // [end, start, victim, victim, start]
 
     // Initial mint
     swap2 calldatasize 0x04 0x18 calldatasize calldatasize swap5    
                                             // [victim, 0, 0x18, 0x04, 0, 0, start, end, victim, start]
-    gas call pop                            // [i, end, victim, start]
+    gas call swap1 sub                            // [i, end, victim, start]
 
     // Loop over mint and transfers
     next_iter:
@@ -63,12 +63,12 @@
     next_iter jumpi                         // [i + 1, end, victim, start]
 
     // mstore start
-    swap3 0x60 mstore                       // [end, victim, i]
+    0x60 mstore                             // [end, victim, start]
 
     // Transfer initial nft
-    swap2 calldatasize 0x64 0x1c calldatasize calldatasize swap5    
-                                            // [victim, 0, 0x1c, 0x64, 0, 0, i, end]
-    gas call                                // [success, i, end]
+    swap1 calldatasize 0x64 0x1c calldatasize calldatasize swap5    
+                                            // [victim, 0, 0x1c, 0x64, 0, 0, i, end, start]
+    gas call                                // [success, end, start]
 
     // Stop
     stop
