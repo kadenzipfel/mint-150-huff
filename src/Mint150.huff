@@ -24,4 +24,10 @@
         swap2 0x01 add                      // [start + 1, victim, success]
         swap1 dup1 swap2 dup1 swap4         // [success, start + 1, victim, victim, start + 1]
     is_owned jumpi                          // [start + 1, victim, victim, start + 1]
+
+    // mstore contract address
+    address 0x20 mstore                     // [start + 1, victim, victim, start + 1]
+
+    // mstore caller address
+    caller 0x40 mstore                      // [start + 1, victim, victim, start + 1]
 }
