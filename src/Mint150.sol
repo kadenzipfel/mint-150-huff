@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.15;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "openzeppelin-contracts/token/ERC721/ERC721.sol";
 
 // You may not modify this contract or the openzeppelin contracts
 contract NotRareToken is ERC721 {
