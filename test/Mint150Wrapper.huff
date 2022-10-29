@@ -1,21 +1,7 @@
-#define function getVictim() view returns (address)
-
-#define constant VICTIM_ADDRESS = FREE_STORAGE_POINTER()
-
-#define macro GET_VICTIM() = takes (0) returns (0) {
-    [VICTIM_ADDRESS] sload
-    0x00 mstore
-    0x20 0x00 return
-}
-
 #define macro CONSTRUCTOR() = takes (0) returns (0) {
     MINT150_CONSTRUCTOR()
 }
 
 #define macro MAIN() = takes (0) returns (0) {
-    0x00 calldataload 0xe0 shr
-    dup1 __FUNC_SIG(getVictim) eq get_victim jumpi
-
-    get_victim:
-        GET_VICTIM()
+    // 0x00 calldataload 0xe0 shr
 }
