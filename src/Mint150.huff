@@ -31,5 +31,6 @@
     // mstore caller address
     caller 0x40 mstore                      // [start, victim, victim, start]
 
-    dup1 150 add                            // [end, start, victim, victim, start]
+    // Get end
+    dup1 0x96 add                           // [end, start, victim, victim, start]
 }
