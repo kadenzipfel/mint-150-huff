@@ -23,7 +23,7 @@
 
         // Increment start
         swap2 0x01 add                      // [start + 1, victim, success]
-        swap1 dup1 swap2 dup1 swap4         // [success, start + 1, victim, victim, start + 1]
+        dup2 swap1 dup1 swap4               // [success, start + 1, victim, victim, start + 1]
     is_owned jumpi                          // [start + 1, victim, victim, start + 1]
 
     // mstore contract address
