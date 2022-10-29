@@ -47,12 +47,12 @@ contract OptimizedAttacker {
     constructor(address victim) payable {
         assembly {
             mstore(0x04, 0x1249c58b23b872dd6352211e)
-            let start := 0
+            let start := 1
             // prettier-ignore
             for {} 1 {} {
-                start := add(start, 1)
                 mstore(0x24, start)
                 // prettier-ignore
+                // if no owner
                 if iszero(staticcall(gas(), victim, 0x20, 0x24, 0, 0)) {
                     mstore(0x20, address())
                     mstore(0x40, caller())
@@ -69,6 +69,7 @@ contract OptimizedAttacker {
                         }
                     }
                 }
+                start := add(start, 1)
             }
         }
     }
