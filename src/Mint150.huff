@@ -63,7 +63,7 @@
     next_iter jumpi                         // [i + 1, end, victim, start]
 
     // mstore start
-    swap3 0x60 mstore                       // [start, end, victim, i]
+    swap3 0x60 mstore                       // [end, victim, i]
 
     // Transfer initial nft
     swap2 calldatasize 0x64 0x1c calldatasize calldatasize swap5    
