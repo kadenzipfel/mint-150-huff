@@ -20,23 +20,16 @@ contract Mint150HuffTest is Test {
             vm.prank(address(1));
             nrt.mint();
         }
+    }
 
+    function testMint150() external {
         string memory wrapper_code = vm.readFile("test/Mint150Wrapper.huff");
         HuffConfig config = HuffDeployer.config()
             .with_code(wrapper_code)
             .with_args(abi.encode(address(nrt)));
-        vm.prank(address(0xBEEF));
         mint150 = Mint150(config.deploy('../src/Mint150'));
+
+        uint256 balance = nrt.balanceOf(address(0x0C7BBB021d72dB4FfBa37bDF4ef055eECdbc0a29));
+        assertEq(balance, 150);
     }
-
-    // function testMint150() external {
-    //     vm.prank(address(0xBEEF));
-    //     HuffDeployer
-    //         .config()
-    //         .with_args(abi.encode(address(nrt)))
-    //         .deploy('../src/Mint150');
-
-    //     uint256 balance = nrt.balanceOf(address(0xBEEF));
-    //     assertEq(balance, 150);
-    // }
 }

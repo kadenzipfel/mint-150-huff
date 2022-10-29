@@ -32,7 +32,7 @@
     caller 0x40 mstore                      // [start, victim, victim, start]
 
     // Get end
-    dup1 0x96 add                           // [end, start, victim, victim, start]
+    dup1 0x97 add                           // [end, start, victim, victim, start]
 
     // Initial mint
     swap2 0x00 0x04 0x18 0x00 0x00 swap5    // [victim, 0, 0x18, 0x04, 0, 0, start, end, victim, start]
