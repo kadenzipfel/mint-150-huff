@@ -1,15 +1,15 @@
 #define macro CONSTRUCTOR() = takes(0) returns(0) {
     // Starting iterator
-    0x01                                    // [0x01]
+    0x01                                    // [start]
     // Get victim address from end of bytecode
-    0x20 dup1 codesize sub                  // [offset, size, 0x01]
-    returndatasize codecopy                 // [0x01]
-    returndatasize mload                    // [victim, 0x01]
+    0x20 dup1 codesize sub                  // [offset, size, start]
+    returndatasize codecopy                 // [start]
+    returndatasize mload                    // [victim, start]
 
     // mstore function selectors
     0x1249c58b23b872dd6352211e returndatasize mstore  
-                                            // [victim, 0x01]
-    dup1 dup3                               // [0x01, victim, victim, 0x01]
+                                            // [victim, start]
+    dup1 dup3                               // [start, victim, victim, start]
 
     // Loop over ownerOf checks until it fails, giving us starting token id
     is_owned:
