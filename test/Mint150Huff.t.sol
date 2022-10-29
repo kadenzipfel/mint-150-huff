@@ -23,9 +23,7 @@ contract Mint150HuffTest is Test {
     }
 
     function testMint150() external {
-        string memory wrapper_code = vm.readFile("test/Mint150Wrapper.huff");
         HuffConfig config = HuffDeployer.config()
-            .with_code(wrapper_code)
             .with_args(abi.encode(address(nrt)));
         mint150 = Mint150(config.deploy('../src/Mint150'));
 

@@ -1,4 +1,4 @@
-#define macro MINT150_CONSTRUCTOR() = takes(0) returns(0) {
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
     // Starting iterator
     0x01                                    // [0x01]
     // Get victim address from end of bytecode
@@ -68,4 +68,7 @@
 
     // Stop
     stop
+}
+
+#define macro MAIN() = takes (0) returns (0) {
 }
