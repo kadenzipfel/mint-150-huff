@@ -11,6 +11,7 @@ interface Mint150 {
 
 contract Mint150HuffTest is Test {
     NotRareToken nrt;
+    Mint150 mint150;
     uint256 constant PREMINTS = 5;
 
     function setUp() external {
@@ -19,17 +20,13 @@ contract Mint150HuffTest is Test {
             vm.prank(address(1));
             nrt.mint();
         }
-    }
 
-    function testGetVictim() external {
         string memory wrapper_code = vm.readFile("test/Mint150Wrapper.huff");
         HuffConfig config = HuffDeployer.config()
             .with_code(wrapper_code)
             .with_args(abi.encode(address(nrt)));
         vm.prank(address(0xBEEF));
-        Mint150 mint150 = Mint150(config.deploy('../src/Mint150'));
-
-        address victim = Mint150(mint150).getVictim();
+        mint150 = Mint150(config.deploy('../src/Mint150'));
     }
 
     // function testMint150() external {
