@@ -1,3 +1,7 @@
-#define macro CONSTRUCTOR() = takes(0) returns(0) {
-    
+#define macro MINT150_CONSTRUCTOR() = takes(0) returns(0) {
+    // Get victim address from end of bytecode
+    0x20 dup1 codesize sub              // [offset, size]
+    returndatasize codecopy                       // []
+    returndatasize mload                          // [victim]
+    [VICTIM_ADDRESS] sstore
 }
