@@ -71,7 +71,7 @@
     // mstore end
     0x48 mstore                             // [end, victim, success]
 
-    // Transfer initial nft
+    // Transfer final nft
     calldatasize calldatasize 0x64 0x04 calldatasize dup7
                                             // [victim, 0, 0x04, 0x64, 0, 0, victim, success]
     gas call                                // [success, victim, success]
