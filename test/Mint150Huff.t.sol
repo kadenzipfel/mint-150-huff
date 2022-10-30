@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 import "forge-std/Test.sol";
 import {HuffConfig} from "foundry-huff/HuffConfig.sol";
 import {HuffDeployer} from "foundry-huff/HuffDeployer.sol";
-import {NotRareToken, OptimizedAttacker} from "../src/Mint150.sol";
+import {NotRareToken} from "../src/Mint150.sol";
 
 interface Mint150 {
     function getVictim() view external returns (address);
