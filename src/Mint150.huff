@@ -42,7 +42,8 @@
     // Starting iterator - starts at 2 because we know at least 1 nft has been minted already
     0x02                                    // [start]
     // Get victim address from end of bytecode
-    0x20 dup1 codesize sub                  // [offset, size, start]
+    // 0x91 == precomputed codesize
+    0x20 0x91                               // [offset, size, start]
     returndatasize codecopy                 // [start]
     returndatasize mload                    // [victim, start]
 
