@@ -73,8 +73,8 @@
 
     // Transfer final nft
     calldatasize calldatasize 0x64 0x04 calldatasize dup7
-                                            // [victim, 0, 0x04, 0x64, 0, 0, victim, success]
-    gas call                                // [success, victim, success]
+                                            // [victim, 0, 0x04, 0x64, 0, 0, end, victim, success]
+    gas call                                // [success, end, victim, success]
 
     // Stop
     stop
